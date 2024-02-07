@@ -57,3 +57,22 @@ model.fit(X_train_pad, y_train, batch_size=32, epochs=10, validation_data=(X_tes
 score = model.evaluate(X_test_pad, y_test, batch_size=32)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+'''
+# Custom testing
+print("\n\n\nCustom testing. Type 'exit' to exit.\n")
+while(1):
+    sample_message = str(input("Enter message:- "))
+    if sample_message == "exit":
+        break
+    # Tokenize and pad the sample message
+    sample_seq = tokenizer.texts_to_sequences([sample_message])
+    sample_pad = pad_sequences(sample_seq, maxlen=max_len)
+    # Predict the class of the sample message
+    prediction = model.predict(sample_pad)
+    # Interpret the prediction result
+    print(f"\nPrediction = {prediction}")
+    if prediction > 0.5:
+        print("Sample message is classified as: spam\n")
+    else:
+        print("Sample message is classified as: ham\n")
+'''
