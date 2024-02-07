@@ -25,6 +25,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 max_words = 1000  # or any other value
 tokenizer = Tokenizer(num_words=max_words)
 '''
+# Suggested by VS Code (as Tokenizer depreciated)
 textvector = TextVectorization(max_tokens=max_words)
 print(textvector)
 '''
