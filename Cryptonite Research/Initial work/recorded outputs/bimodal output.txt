@@ -1,0 +1,46 @@
+PS D:\AI\Cryptonite Research> & C:/Users/ishan/AppData/Local/Microsoft/WindowsApps/python3.11.exe "d:/AI/Cryptonite Research/bimodel.py"
+d:\AI\Cryptonite Research\bimodel.py:1: DeprecationWarning: 
+Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
+(to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
+but was not found to be installed on your system.
+If this would cause problems for you,
+please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+        
+  import pandas as pd
+2024-02-06 21:20:03.830359: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING:tensorflow:From C:\Users\ishan\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+WARNING:tensorflow:From C:\Users\ishan\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\keras\src\backend.py:1398: The name tf.executing_eagerly_outside_functions is deprecated. Please use tf.compat.v1.executing_eagerly_outside_functions instead.
+
+2024-02-06 21:20:07.845235: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE SSE2 SSE3 SSE4.1 SSE4.2 AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING:tensorflow:From C:\Users\ishan\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\keras\src\optimizers\__init__.py:309: The name tf.train.Optimizer is deprecated. Please use tf.compat.v1.train.Optimizer instead.
+
+Epoch 1/10
+WARNING:tensorflow:From C:\Users\ishan\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\keras\src\utils\tf_utils.py:492: The name tf.ragged.RaggedTensorValue is deprecated. Please use tf.compat.v1.ragged.RaggedTensorValue instead.
+
+WARNING:tensorflow:From C:\Users\ishan\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\keras\src\engine\base_layer_utils.py:384: The name tf.executing_eagerly_outside_functions is deprecated. Please use tf.compat.v1.executing_eagerly_outside_functions instead.
+
+223/223 [==============================] - 3s 8ms/step - loss: 0.1756 - accuracy: 0.9434 - val_loss: 0.0521 - val_accuracy: 0.9832
+Epoch 2/10
+223/223 [==============================] - 2s 7ms/step - loss: 0.0369 - accuracy: 0.9889 - val_loss: 0.0412 - val_accuracy: 0.9849
+Epoch 3/10
+223/223 [==============================] - 2s 8ms/step - loss: 0.0206 - accuracy: 0.9941 - val_loss: 0.0440 - val_accuracy: 0.9865
+Epoch 4/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0111 - accuracy: 0.9965 - val_loss: 0.0577 - val_accuracy: 0.9843
+Epoch 5/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0046 - accuracy: 0.9993 - val_loss: 0.0520 - val_accuracy: 0.9860
+Epoch 6/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0030 - accuracy: 0.9996 - val_loss: 0.0535 - val_accuracy: 0.9865
+Epoch 7/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0028 - accuracy: 0.9996 - val_loss: 0.0528 - val_accuracy: 0.9865
+Epoch 8/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0021 - accuracy: 0.9997 - val_loss: 0.0532 - val_accuracy: 0.9882
+Epoch 9/10
+223/223 [==============================] - 2s 10ms/step - loss: 0.0022 - accuracy: 0.9994 - val_loss: 0.0681 - val_accuracy: 0.9877
+Epoch 10/10
+223/223 [==============================] - 2s 9ms/step - loss: 0.0040 - accuracy: 0.9985 - val_loss: 0.0656 - val_accuracy: 0.9871
+70/70 [==============================] - 0s 3ms/step - loss: 0.0569 - accuracy: 0.9879
+Test loss: 0.056860439479351044
+Test accuracy: 0.9878923892974854
+PS D:\AI\Cryptonite Research> 

@@ -1,78 +1,45 @@
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense, Dropout, TextVectorization
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
 
-# Load the CSV file
-df = pd.read_csv('datasets/sms_spam.csv')
-'''
-# Set display options to show all rows and columns
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', None)
-'''
-# Split the data into training and testing sets
-x = df['text'].values
-y = df['type'].values
-# Convert labels to binary (0s and 1s)
-y = (y == 'spam').astype(int)
+# Load data from CSV file
+column_names = ['_id', 'date', 'id', 'relevant', 'text', 'tweet', 'type', 'watson', 'annotation']
+data = pd.read_csv('tweets.csv', names=column_names)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+# Extract relevant columns
+tweets_data = data['text']
+data['type'] = data['type'].str.replace(r"[\[\]']", '', regex=True)
+categories = data['type']
 
-# Tokenize the text data
-max_words = 1000  # or any other value
-tokenizer = Tokenizer(num_words=max_words)
-'''
-# Suggested by VS Code (as Tokenizer depreciated)
-textvector = TextVectorization(max_tokens=max_words)
-print(textvector)
-'''
-tokenizer.fit_on_texts(x_train)
-X_train_seq = tokenizer.texts_to_sequences(x_train)
-X_test_seq = tokenizer.texts_to_sequences(x_test)
+# Preprocess the data
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(tweets_data)
+X_seq = tokenizer.texts_to_sequences(tweets_data)
+X_pad = pad_sequences(X_seq, maxlen=100)
 
-# Pad the sequences
-max_len = 100  # or any other value
-X_train_pad = pad_sequences(X_train_seq, maxlen=max_len)
-X_test_pad = pad_sequences(X_test_seq, maxlen=max_len)
+# Convert labels to numerical values
+label_dict = {'vulnerability': 0, 'ransomware': 1, 'ddos': 2, 'leak': 3, 'general': 4, '0day': 5, 'botnet': 6, 'all': 7}
+y = np.array([label_dict[category] for category in categories])
 
-# Define the CNN model architecture
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_pad, y, test_size=0.2, random_state=42)
+
+# Build the CNN model
 model = Sequential()
-model.add(Embedding(input_dim=max_words, output_dim=100, input_length=max_len))
-model.add(Conv1D(filters=128, kernel_size=3, padding='valid', activation='relu', strides=1))
+model.add(Embedding(input_dim=len(tokenizer.word_index)+1, output_dim=100, input_length=100))
+model.add(Conv1D(128, 5, activation='relu'))
 model.add(GlobalMaxPooling1D())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1, activation='sigmoid'))  # Binary classification, so 1 output node with sigmoid activation
+model.add(Dense(8, activation='softmax'))  # Output layer with 8 classes
 
-# Compile the model
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Train the model
-model.fit(X_train_pad, y_train, batch_size=32, epochs=10, validation_data=(X_test_pad, y_test))
+model.fit(X_train, y_train, batch_size=32, epochs=5, validation_data=(X_test, y_test))
 
 # Evaluate the model
-score = model.evaluate(X_test_pad, y_test, batch_size=32)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
-'''
-# Custom testing
-print("\n\n\nCustom testing. Type 'exit' to exit.\n")
-while(1):
-    sample_message = str(input("Enter message:- "))
-    if sample_message == "exit":
-        break
-    # Tokenize and pad the sample message
-    sample_seq = tokenizer.texts_to_sequences([sample_message])
-    sample_pad = pad_sequences(sample_seq, maxlen=max_len)
-    # Predict the class of the sample message
-    prediction = model.predict(sample_pad)
-    # Interpret the prediction result
-    print(f"\nPrediction = {prediction}")
-    if prediction > 0.5:
-        print("Sample message is classified as: spam\n")
-    else:
-        print("Sample message is classified as: ham\n")
-'''
+loss, accuracy = model.evaluate(X_test, y_test)
+print(f'Test Loss: {loss}, Test Accuracy: {accuracy}')
