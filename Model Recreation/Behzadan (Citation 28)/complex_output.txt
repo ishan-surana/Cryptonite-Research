@@ -1,0 +1,13 @@
+535/535 [==============================] - 46s 84ms/step - loss: 0.3494 - accuracy: 0.9015 - val_loss: 0.1218 - val_accuracy: 0.9663
+Epoch 2/5
+535/535 [==============================] - 45s 85ms/step - loss: 0.0802 - accuracy: 0.9763 - val_loss: 0.1325 - val_accuracy: 0.9635
+Epoch 3/5
+535/535 [==============================] - 48s 90ms/step - loss: 0.0193 - accuracy: 0.9951 - val_loss: 0.1198 - val_accuracy: 0.9703
+Epoch 4/5
+535/535 [==============================] - 47s 88ms/step - loss: 0.0052 - accuracy: 0.9984 - val_loss: 0.1314 - val_accuracy: 0.9665
+Epoch 5/5
+535/535 [==============================] - 45s 84ms/step - loss: 0.0017 - accuracy: 0.9997 - val_loss: 0.1277 - val_accuracy: 0.9689
+134/134 [==============================] - 1s 4ms/step - loss: 0.1277 - accuracy: 0.9689
+Test Loss: 0.1276978850364685, Test Accuracy: 0.9688816070556641
+
+[for 200 train + 80 test]
