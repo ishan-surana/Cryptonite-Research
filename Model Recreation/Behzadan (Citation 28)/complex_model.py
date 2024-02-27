@@ -5,47 +5,14 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
-import requests
 
 # Load data from CSV file
-column_names = ['_id', 'date', 'id', 'relevant', 'text', 'tweet', 'type', 'watson', 'annotation']
-data = pd.read_csv('tweets.csv', names=column_names)
+data = pd.read_csv('tweets_final.csv')
 
 # Extract relevant columns
 tweets_data = data['text']
-data['type'] = data['type'].str.replace(r"[\[\]']", '', regex=True)
+# data['type'] = data['type'].str.replace(r"[\[\]']", '', regex=True)
 categories = data['type']
-
-# Extract URLs from tweets
-def extract_urls(tweet):
-    try:
-        entities = eval(tweet)['entities']
-        urls = [url['expanded_url'] for url in entities['urls']]
-        return urls
-    except (KeyError, TypeError):
-        return []
-
-data['urls'] = data['tweet'].apply(extract_urls)
-
-# Function to get final destination URL
-def get_final_destination_url(shortened_url):
-    try:
-        response = requests.head(shortened_url, allow_redirects=True)
-        return response.url
-    except requests.exceptions.RequestException:
-        return None
-
-# Process URL features
-def process_url_features(urls):
-    final_urls = []
-    for url_list in urls:
-        final_url_list = []
-        for url in url_list:
-            final_url = get_final_destination_url(url)
-            if final_url:
-                final_url_list.append(final_url)
-        final_urls.append(final_url_list)
-    return final_urls
 
 # Preprocess the data
 tokenizer = Tokenizer()
@@ -67,6 +34,10 @@ num_tweets = user_features['statuses_count']
 user_creation_date = pd.to_datetime(user_features['created_at'], errors='coerce')  # Specify error handling
 user_verified_status = user_features['verified'].astype(int)
 
+# Convert user features to numpy arrays
+user_features_array = user_features.to_numpy()
+user_screen_name_array = user_screen_name.to_numpy()
+
 # Process hashtag features
 hashtags = data['tweet'].apply(lambda x: eval(x)['entities']['hashtags'])
 num_hashtags = np.array([len(h) for h in hashtags])
@@ -85,8 +56,16 @@ timestamp = pd.to_datetime(data['date'], errors='coerce')  # Specify error handl
 language = data['tweet'].apply(lambda x: eval(x)['lang'])
 location = user_features['location']  # Assuming location is part of user details
 
+# Add 'destination_url' and 'valid_certificate' features
+destination_urls = data['destination_url'].fillna('NA')
+valid_certificates = data['valid_certificate'].fillna('NA')
+
 # Combine all features
-X_combined = np.column_stack((X_pad, text_length, num_words, num_chars, num_followers, num_friends, num_tweets, user_verified_status, num_hashtags, num_urls))
+X_combined = np.column_stack((X_pad, text_length, num_words, num_chars, num_followers, num_friends, num_tweets, user_features_array, user_screen_name_array, user_verified_status, num_hashtags, num_urls))
+
+# Append additional features to X_combined
+additional_features = np.column_stack((hashtags, url_list, source, timestamp, language, location))
+X_combined = np.column_stack((X_combined, additional_features))
 
 # Convert labels to numerical values
 label_dict = {'vulnerability': 0, 'ransomware': 1, 'ddos': 2, 'leak': 3, 'general': 4, '0day': 5, 'botnet': 6, 'all': 7}
@@ -94,14 +73,6 @@ y = np.array([label_dict[category] for category in categories])
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X_pad, y, test_size=0.2, random_state=42)
-
-# Get the indices for the training and testing sets
-train_indices = np.arange(len(X_train)) # (200,80) takes about 8 minutes
-test_indices = np.arange(len(X_train), len(X_train) + len(X_test))
-
-# Process URL features
-train_urls = process_url_features(data.loc[train_indices, 'urls'].values)
-test_urls = process_url_features(data.loc[test_indices, 'urls'].values)
 
 # Build the CNN model
 model = Sequential()
