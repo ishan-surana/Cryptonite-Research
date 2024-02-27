@@ -13,4 +13,4 @@ Model implementation [main paper](https://www.mdpi.com/2504-4990/5/3/58#B27-make
 | Model | Function | Dataset rows | Accuracy (avg.)|
 |-|-|-|-|
 |[Behzadan model basic recreation (Reference 28)](Model%20Recreation/Behzadan%20(Citation%2028)/model.py)|Only text is analysed|[21368](Model%20Recreation/Behzadan%20(Citation%2028)/tweets.csv)|~[96.79%](Model%20Recreation/Behzadan%20(Citation%2028)/basic_output.txt)|
-|[Actual recreation](Model%20Recreation/Behzadan%20(Citation%2028)/complex_model.py)|Text + tweet details analysed|[21368](Model%20Recreation/Behzadan%20(Citation%2028)/tweets.csv)|~[96.89](Model%20Recreation/Behzadan%20(Citation%2028)/complex_output.txt) (with 200 train + 80 test)|
+|[Actual recreation](Model%20Recreation/Behzadan%20(Citation%2028)/complex_model.py)|Text + tweet details analysed|[21368](Model%20Recreation/Behzadan%20(Citation%2028)/tweets_final.csv)|~[96.70](Model%20Recreation/Behzadan%20(Citation%2028)/complex_output.txt)|
