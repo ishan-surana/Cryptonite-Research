@@ -1,0 +1,48 @@
+Epoch 1/5
+535/535 [==============================] - 45s 82ms/step - loss: 0.4891 - accuracy: 0.8693 - val_loss: 0.1762 - val_accuracy: 0.9595
+Epoch 2/5
+535/535 [==============================] - 46s 86ms/step - loss: 0.1046 - accuracy: 0.9697 - val_loss: 0.2317 - val_accuracy: 0.9485
+Epoch 3/5
+535/535 [==============================] - 45s 83ms/step - loss: 0.0537 - accuracy: 0.9827 - val_loss: 0.1568 - val_accuracy: 0.9595
+Epoch 4/5
+535/535 [==============================] - 44s 82ms/step - loss: 0.0302 - accuracy: 0.9908 - val_loss: 0.1751 - val_accuracy: 0.9537
+Epoch 5/5
+535/535 [==============================] - 43s 81ms/step - loss: 0.0151 - accuracy: 0.9954 - val_loss: 0.2025 - val_accuracy: 0.9577
+134/134 [==============================] - 1s 4ms/step - loss: 0.2025 - accuracy: 0.9577
+Test Loss: 0.20245471596717834, Test Accuracy: 0.957650899887085
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to
+==================================================================================================
+ content_input (InputLayer)  [(None, 100)]                0         []
+
+ embedding (Embedding)       (None, 100, 100)             4569500   ['content_input[0][0]']
+
+ conv1d (Conv1D)             (None, 96, 128)              64128     ['embedding[0][0]']
+
+ dropout (Dropout)           (None, 96, 128)              0         ['conv1d[0][0]']
+
+ global_max_pooling1d (Glob  (None, 128)                  0         ['dropout[0][0]']
+ alMaxPooling1D)
+
+ flatten (Flatten)           (None, 128)                  0         ['global_max_pooling1d[0][0]']
+
+ text_structure_input (Inpu  [(None, 2)]                  0         []
+ tLayer)
+
+ url_structure_input (Input  [(None, 1000)]               0         []
+ Layer)
+
+ concatenate (Concatenate)   (None, 1130)                 0         ['flatten[0][0]',
+                                                                     'text_structure_input[0][0]',
+                                                                     'url_structure_input[0][0]']
+
+ dense (Dense)               (None, 128)                  144768    ['concatenate[0][0]']
+
+ dense_1 (Dense)             (None, 8)                    1032      ['dense[0][0]']
+
+==================================================================================================
+Total params: 4779428 (18.23 MB)
+Trainable params: 4779428 (18.23 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
