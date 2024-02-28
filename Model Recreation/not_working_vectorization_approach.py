@@ -15,6 +15,7 @@ from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.feature_extraction import FeatureHasher
 import emoji
 import ast
+from scipy.sparse import hstack
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -159,9 +160,6 @@ url_features = data.apply(lambda row: pd.Series(extract_url_features(row['destin
 url_features.columns = ['url_length', 'has_security_protocol', 'is_shortened_url', 'strings_divided_by_periods', 'strings_divided_by_hyphens', 'strings_divided_by_slashes', 'num_words', 'num_ips', 'num_digits', 'num_hyphens', 'num_periods', 'num_slashes', 'num_uppercase', 'num_lowercase', 'num_ampersand_symbols', 'num_equal_symbols', 'num_question_marks', 'num_wave_symbols', 'num_plus_signs', 'num_colon_symbols', 'num_other_characters', 'has_extension', 'domain_suffix', 'registrant']
 data = pd.concat([data, url_features], axis=1)
 
-url_features = data.apply(lambda row: pd.Series(extract_url_features(row['destination_url'], row['urls'])), axis=1)
-url_features_df = pd.DataFrame(url_features.values, columns=['feature_{}'.format(i) for i in range(url_features.shape[1])])
-
 # Replace specific URL components with predefined tokens
 def replace_url_components(url):
     # Replace email addresses and mentioned users with predefined tokens
@@ -175,21 +173,33 @@ data['destination_url'].fillna('', inplace=True)
 data['resolved_urls'] = data['destination_url'].apply(replace_url_components)
 
 # Vectorization
+MAX_TOKENS = len(tokenizer.word_index)
+NUM_HASHED_FEATURES = 100000
+
 # Hashing Vector for content
-hashing_vectorizer = HashingVectorizer(n_features=100)
+hashing_vectorizer = HashingVectorizer(n_features=MAX_TOKENS)
 X_hash = hashing_vectorizer.fit_transform(data['text'])
 
 # Text Structure Vector
 X_text_structure = np.array(data['structural_features'].tolist())
 
-url_features_lists = url_features_df.astype(str).apply(lambda row: row.tolist(), axis=1)
+# URL Structure Vector
+# If the message contains a URL, use extracted URL features
+# Otherwise, use predefined URL_ZERO values
+url_structure_features = data.apply(lambda row: extract_url_features(row['resolved_urls'], row['urls']), axis=1).tolist()
+X_url_structure = np.array(url_structure_features)
+
+# Perform one-hot encoding for categorical features in url_features DataFrame
+encoder = OneHotEncoder(categories='auto')
+X_url_structure_encoded = encoder.fit_transform(url_features[categorical_columns])
+X_url_structure_encoded_dense = X_url_structure_encoded.toarray()
+
+# Combine features for each message
+X_combined = np.concatenate((X_hash.toarray(), X_text_structure, X_url_structure_encoded_dense), axis=1)
 
 # Hash the combined features
-hasher = FeatureHasher(n_features=1000, input_type='string')
-X_url_structure_hashed = hasher.transform(url_features_lists)
-
-# Convert hashed features to array
-X_url_structure_hashed = X_url_structure_hashed.toarray()
+hasher = FeatureHasher(n_features=NUM_HASHED_FEATURES, input_type='string')
+X_vectorized = hasher.transform(X_combined).toarray()
 
 # Convert labels to numerical values
 label_dict = {'vulnerability': 0, 'ransomware': 1, 'ddos': 2, 'leak': 3, 'general': 4, '0day': 5, 'botnet': 6, 'all': 7}
