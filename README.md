@@ -9,7 +9,8 @@ Initial Work
 
 <br>
 
-Model implementation [main paper](https://www.mdpi.com/2504-4990/5/3/58#B27-make-05-00058)
+Model implementation [main paper](https://www.mdpi.com/2504-4990/5/3/58#B27-make-05-00058)<br>
+The 3rd and 4th model have the architecture and layers as per the main paper, but operate on the dataset of reference 28 (dataset provided), and therefore, the labels are different.
 | Model | Function | Dataset rows | Accuracy (avg.)|
 |-|-|-|-|
 |[Behzadan model basic recreation (Reference 28)](Model%20Recreation/Behzadan%20(Citation%2028)/model.py)|Only text is analysed|[21368](Model%20Recreation/Behzadan%20(Citation%2028)/tweets.csv)|~[96.79%](Model%20Recreation/Behzadan%20(Citation%2028)/basic_output.txt)|
