@@ -1,0 +1,176 @@
+With callbacks [reduce learning rate + early stopping]
+
+Epoch 1/5
+535/535 [==============================] - 44s 73ms/step - loss: 10.2630 - accuracy: 0.1845 - val_loss: 9.2263 - val_accuracy: 0.2026 - lr: 1.0000e-04
+Epoch 2/5
+535/535 [==============================] - 40s 76ms/step - loss: 8.6478 - accuracy: 0.1679 - val_loss: 8.4087 - val_accuracy: 0.1731 - lr: 1.0000e-04
+Epoch 3/5
+535/535 [==============================] - 37s 70ms/step - loss: 8.0439 - accuracy: 0.1639 - val_loss: 7.9399 - val_accuracy: 0.1570 - lr: 1.0000e-04
+Epoch 4/5
+535/535 [==============================] - 39s 73ms/step - loss: 7.6452 - accuracy: 0.1595 - val_loss: 7.5844 - val_accuracy: 0.1610 - lr: 1.0000e-04
+Epoch 5/5
+535/535 [==============================] - 40s 74ms/step - loss: 7.3143 - accuracy: 0.1662 - val_loss: 7.2677 - val_accuracy: 0.1652 - lr: 1.0000e-04
+134/134 [==============================] - 0s 3ms/step - loss: 7.2677 - accuracy: 0.1652
+Test Loss: 7.267748832702637, Test Accuracy: 0.1651848405599594
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to
+==================================================================================================
+ content_input (InputLayer)  [(None, 93)]                 0         []
+
+ embedding (Embedding)       (None, 93, 93)               4249635   ['content_input[0][0]']
+
+ conv1d (Conv1D)             (None, 86, 8)                5960      ['embedding[0][0]']
+
+ dropout (Dropout)           (None, 86, 8)                0         ['conv1d[0][0]']
+
+ max_pooling1d (MaxPooling1  (None, 43, 8)                0         ['dropout[0][0]']
+ D)
+
+ flatten (Flatten)           (None, 344)                  0         ['max_pooling1d[0][0]']
+
+ batch_normalization (Batch  (None, 344)                  1376      ['flatten[0][0]']
+ Normalization)
+
+ text_structure_input (Inpu  [(None, 16)]                 0         []
+ tLayer)
+
+ url_structure_input (Input  [(None, 1000)]               0         []
+ Layer)
+
+ concatenate (Concatenate)   (None, 1360)                 0         ['batch_normalization[0][0]',
+                                                                     'text_structure_input[0][0]',
+                                                                     'url_structure_input[0][0]']
+
+ dense (Dense)               (None, 155)                  210955    ['concatenate[0][0]']
+
+ batch_normalization_1 (Bat  (None, 155)                  620       ['dense[0][0]']
+ chNormalization)
+
+ dense_1 (Dense)             (None, 105)                  16380     ['batch_normalization_1[0][0]'
+                                                                    ]
+
+ batch_normalization_2 (Bat  (None, 105)                  420       ['dense_1[0][0]']
+ chNormalization)
+
+ dense_2 (Dense)             (None, 50)                   5300      ['batch_normalization_2[0][0]'
+                                                                    ]
+
+ batch_normalization_3 (Bat  (None, 50)                   200       ['dense_2[0][0]']
+ chNormalization)
+
+ dense_3 (Dense)             (None, 25)                   1275      ['batch_normalization_3[0][0]'
+                                                                    ]
+
+ batch_normalization_4 (Bat  (None, 25)                   100       ['dense_3[0][0]']
+ chNormalization)
+
+ dense_4 (Dense)             (None, 25)                   650       ['batch_normalization_4[0][0]'
+                                                                    ]
+
+ batch_normalization_5 (Bat  (None, 25)                   100       ['dense_4[0][0]']
+ chNormalization)
+
+ dense_5 (Dense)             (None, 10)                   260       ['batch_normalization_5[0][0]'
+                                                                    ]
+
+ batch_normalization_6 (Bat  (None, 10)                   40        ['dense_5[0][0]']
+ chNormalization)
+
+ dense_6 (Dense)             (None, 5)                    55        ['batch_normalization_6[0][0]'
+                                                                    ]
+
+==================================================================================================
+Total params: 4493326 (17.14 MB)
+Trainable params: 4491898 (17.14 MB)
+Non-trainable params: 1428 (5.58 KB)
+__________________________________________________________________________________________________
+
+
+Without callbacks
+
+Epoch 1/5
+535/535 [==============================] - 42s 74ms/step - loss: 7.5836 - accuracy: 0.1625 - val_loss: 6.5406 - val_accuracy: 0.1390
+Epoch 2/5
+535/535 [==============================] - 39s 72ms/step - loss: 5.8913 - accuracy: 0.1755 - val_loss: 5.6401 - val_accuracy: 0.1280
+Epoch 3/5
+535/535 [==============================] - 37s 70ms/step - loss: 5.3807 - accuracy: 0.1771 - val_loss: 5.4071 - val_accuracy: 0.1303
+Epoch 4/5
+535/535 [==============================] - 37s 70ms/step - loss: 5.2656 - accuracy: 0.1883 - val_loss: 5.3619 - val_accuracy: 0.1235
+Epoch 5/5
+535/535 [==============================] - 37s 70ms/step - loss: 5.2479 - accuracy: 0.1993 - val_loss: 5.3578 - val_accuracy: 0.2380
+134/134 [==============================] - 0s 3ms/step - loss: 5.3578 - accuracy: 0.2380
+Test Loss: 5.357787132263184, Test Accuracy: 0.237950399518013
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to
+==================================================================================================
+ content_input (InputLayer)  [(None, 93)]                 0         []
+
+ embedding (Embedding)       (None, 93, 93)               4249635   ['content_input[0][0]']
+
+ conv1d (Conv1D)             (None, 86, 8)                5960      ['embedding[0][0]']
+
+ dropout (Dropout)           (None, 86, 8)                0         ['conv1d[0][0]']
+
+ max_pooling1d (MaxPooling1  (None, 43, 8)                0         ['dropout[0][0]']
+ D)
+
+ flatten (Flatten)           (None, 344)                  0         ['max_pooling1d[0][0]']
+
+ batch_normalization (Batch  (None, 344)                  1376      ['flatten[0][0]']
+ Normalization)
+
+ text_structure_input (Inpu  [(None, 16)]                 0         []
+ tLayer)
+
+ url_structure_input (Input  [(None, 1000)]               0         []
+ Layer)
+
+ concatenate (Concatenate)   (None, 1360)                 0         ['batch_normalization[0][0]',
+                                                                     'text_structure_input[0][0]',
+                                                                     'url_structure_input[0][0]']
+
+ dense (Dense)               (None, 155)                  210955    ['concatenate[0][0]']
+
+ batch_normalization_1 (Bat  (None, 155)                  620       ['dense[0][0]']
+ chNormalization)
+
+ dense_1 (Dense)             (None, 105)                  16380     ['batch_normalization_1[0][0]'
+                                                                    ]
+
+ batch_normalization_2 (Bat  (None, 105)                  420       ['dense_1[0][0]']
+ chNormalization)
+
+ dense_2 (Dense)             (None, 50)                   5300      ['batch_normalization_2[0][0]'
+                                                                    ]
+
+ batch_normalization_3 (Bat  (None, 50)                   200       ['dense_2[0][0]']
+ chNormalization)
+
+ dense_3 (Dense)             (None, 25)                   1275      ['batch_normalization_3[0][0]'
+                                                                    ]
+
+ batch_normalization_4 (Bat  (None, 25)                   100       ['dense_3[0][0]']
+ chNormalization)
+
+ dense_4 (Dense)             (None, 25)                   650       ['batch_normalization_4[0][0]'
+                                                                    ]
+
+ batch_normalization_5 (Bat  (None, 25)                   100       ['dense_4[0][0]']
+ chNormalization)
+
+ dense_5 (Dense)             (None, 10)                   260       ['batch_normalization_5[0][0]'
+                                                                    ]
+
+ batch_normalization_6 (Bat  (None, 10)                   40        ['dense_5[0][0]']
+ chNormalization)
+
+ dense_6 (Dense)             (None, 5)                    55        ['batch_normalization_6[0][0]'
+                                                                    ]
+
+==================================================================================================
+Total params: 4493326 (17.14 MB)
+Trainable params: 4491898 (17.14 MB)
+Non-trainable params: 1428 (5.58 KB)
+__________________________________________________________________________________________________

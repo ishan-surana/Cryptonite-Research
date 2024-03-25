@@ -1,0 +1,104 @@
+Epoch 1/5
+535/535 [==============================] - 43s 78ms/step - loss: 0.4283 - accuracy: 0.8751 - val_loss: 0.1710 - val_accuracy: 0.9598
+Epoch 2/5
+535/535 [==============================] - 43s 80ms/step - loss: 0.1047 - accuracy: 0.9693 - val_loss: 0.1563 - val_accuracy: 0.9644
+Epoch 3/5
+535/535 [==============================] - 45s 84ms/step - loss: 0.0546 - accuracy: 0.9826 - val_loss: 0.1574 - val_accuracy: 0.9621
+Epoch 4/5
+535/535 [==============================] - 44s 83ms/step - loss: 0.0282 - accuracy: 0.9911 - val_loss: 0.2817 - val_accuracy: 0.9317
+Epoch 5/5
+535/535 [==============================] - 43s 80ms/step - loss: 0.0136 - accuracy: 0.9958 - val_loss: 0.1841 - val_accuracy: 0.9605
+134/134 [==============================] - 1s 7ms/step - loss: 0.1841 - accuracy: 0.9605
+Test Loss: 0.18410637974739075, Test Accuracy: 0.9604585766792297
+
+Model: "model_1"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to
+==================================================================================================
+ content_input (InputLayer)  [(None, 100)]                0         []
+
+ embedding_1 (Embedding)     (None, 100, 100)             4569500   ['content_input[0][0]']
+
+ conv1d_1 (Conv1D)           (None, 96, 128)              64128     ['embedding_1[0][0]']
+
+ dropout_1 (Dropout)         (None, 96, 128)              0         ['conv1d_1[0][0]']
+
+ global_max_pooling1d_1 (Gl  (None, 128)                  0         ['dropout_1[0][0]']
+ obalMaxPooling1D)
+
+ flatten_1 (Flatten)         (None, 128)                  0         ['global_max_pooling1d_1[0][0]
+                                                                    ']
+
+ text_structure_input (Inpu  [(None, 16)]                 0         []
+ tLayer)
+
+ url_structure_input (Input  [(None, 1000)]               0         []
+ Layer)
+
+ concatenate_1 (Concatenate  (None, 1144)                 0         ['flatten_1[0][0]',
+ )                                                                   'text_structure_input[0][0]',
+                                                                     'url_structure_input[0][0]']
+
+ dense_2 (Dense)             (None, 128)                  146560    ['concatenate_1[0][0]']
+
+ dense_3 (Dense)             (None, 8)                    1032      ['dense_2[0][0]']
+
+==================================================================================================
+Total params: 4781220 (18.24 MB)
+Trainable params: 4781220 (18.24 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+
+
+
+
+
+
+
+535/535 [==============================] - 44s 80ms/step - loss: 0.4369 - accuracy: 0.8781 - val_loss: 0.1737 - val_accuracy: 0.9628
+Epoch 2/5
+535/535 [==============================] - 42s 79ms/step - loss: 0.1011 - accuracy: 0.9702 - val_loss: 0.1438 - val_accuracy: 0.9644
+Epoch 3/5
+535/535 [==============================] - 43s 80ms/step - loss: 0.0514 - accuracy: 0.9836 - val_loss: 0.1675 - val_accuracy: 0.9553
+Epoch 4/5
+535/535 [==============================] - 43s 80ms/step - loss: 0.0279 - accuracy: 0.9906 - val_loss: 0.2518 - val_accuracy: 0.9298
+Epoch 5/5
+535/535 [==============================] - 42s 79ms/step - loss: 0.0156 - accuracy: 0.9959 - val_loss: 0.2158 - val_accuracy: 0.9558
+134/134 [==============================] - 1s 4ms/step - loss: 0.2158 - accuracy: 0.9558
+Test Loss: 0.21575389802455902, Test Accuracy: 0.9557791352272034
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to
+==================================================================================================
+ content_input (InputLayer)  [(None, 100)]                0         []
+
+ embedding (Embedding)       (None, 100, 100)             4569500   ['content_input[0][0]']
+
+ conv1d (Conv1D)             (None, 96, 128)              64128     ['embedding[0][0]']
+
+ dropout (Dropout)           (None, 96, 128)              0         ['conv1d[0][0]']
+
+ global_max_pooling1d (Glob  (None, 128)                  0         ['dropout[0][0]']
+ alMaxPooling1D)
+
+ flatten (Flatten)           (None, 128)                  0         ['global_max_pooling1d[0][0]']
+
+ text_structure_input (Inpu  [(None, 16)]                 0         []
+ tLayer)
+
+ url_structure_input (Input  [(None, 1000)]               0         []
+ Layer)
+
+ concatenate (Concatenate)   (None, 1144)                 0         ['flatten[0][0]',
+                                                                     'text_structure_input[0][0]',
+                                                                     'url_structure_input[0][0]']
+
+ dense (Dense)               (None, 128)                  146560    ['concatenate[0][0]']
+
+ dense_1 (Dense)             (None, 8)                    1032      ['dense[0][0]']
+
+==================================================================================================
+Total params: 4781220 (18.24 MB)
+Trainable params: 4781220 (18.24 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
