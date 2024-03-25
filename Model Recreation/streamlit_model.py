@@ -17,6 +17,7 @@ import emoji
 import ast
 import networkx as nx
 import matplotlib.pyplot as plt
+import streamlit as st
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -187,7 +188,7 @@ X_text_structure = np.array(data['structural_features'].tolist())
 url_features_lists = url_features_df.astype(str).apply(lambda row: row.tolist(), axis=1)
 
 # Hash the combined features
-hasher = FeatureHasher(n_features=1000, input_type='string')
+hasher = FeatureHasher(n_features=1116, input_type='string')
 X_url_structure_hashed = hasher.transform(url_features_lists)
 
 # Convert hashed features to array
@@ -197,16 +198,10 @@ X_url_structure_hashed = X_url_structure_hashed.toarray()
 label_dict = {'vulnerability': 0, 'ransomware': 1, 'ddos': 2, 'leak': 3, 'general': 4, '0day': 5, 'botnet': 6, 'all': 7}
 y = np.array([label_dict[category] for category in data['type']])
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_pad, y, test_size=0.2, random_state=42)
-X_train_hash, X_test_hash, _, _ = train_test_split(X_hash, y, test_size=0.2, random_state=42)
-X_train_text_structure, X_test_text_structure, _, _ = train_test_split(X_text_structure, y, test_size=0.2, random_state=42)
-X_train_url_structure, X_test_url_structure, _, _ = train_test_split(X_url_structure_hashed, y, test_size=0.2, random_state=42)
-
 # Build the CNN model
 input_content = Input(shape=(100,), name='content_input')
 input_text_structure = Input(shape=(16,), name='text_structure_input')
-input_url_structure = Input(shape=(1000,), name='url_structure_input')
+input_url_structure = Input(shape=(1232,), name='url_structure_input')
 
 # Additional input layers for other features
 embedding = Embedding(input_dim=len(tokenizer.word_index)+1, output_dim=100, input_length=100)(input_content)
@@ -227,53 +222,64 @@ model = Model(inputs=[input_content, input_text_structure, input_url_structure],
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# Train the model
-model.fit(
-    x=[X_train, X_train_text_structure, X_train_url_structure],
-    y=y_train,
-    batch_size=32,
-    epochs=5,
-    validation_data=(
-        [X_test, X_test_text_structure, X_test_url_structure],
-        y_test
-    )
-)
+# Define function to preprocess user input tweet text
+def preprocess_input_text(text):
+    text = clean_text(text)
+    text = lemmatize_text(text)
+    text = remove_stopwords(text)
+    text = replace_text_components(text)
+    return text
 
-# Evaluate the model
-loss, accuracy = model.evaluate([X_test, X_test_text_structure, X_test_url_structure], y_test)
-print(f'Test Loss: {loss}, Test Accuracy: {accuracy}')
+# Define function to predict label types for input text
+def predict_label(text):
+    # Preprocess input text
+    preprocessed_text = preprocess_input_text(text)
+    
+    # Tokenize and pad input text
+    sequence = tokenizer.texts_to_sequences([preprocessed_text])
+    padded_sequence = pad_sequences(sequence, maxlen=100)
+    
+    # Extract structural features for input text
+    structural_features = extract_structural_features(preprocessed_text)
+    
+    # Extract URL features for input text (if applicable)
+    url_features_list = extract_url_features(preprocessed_text, [])
+    url_features_array = np.array([url_features_list])
+    url_structure_hashed = hasher.transform(url_features_array).toarray()
+    
+    # Combine input features
+    combined_features = np.concatenate((hashing_vectorizer.transform([preprocessed_text]).toarray(), 
+                                        np.array([structural_features]), 
+                                        url_structure_hashed), axis=1)
+    
+    # Make predictions
+    predictions = model.predict([padded_sequence, np.array([structural_features]), combined_features])
+    
+    # Process predictions
+    label_probabilities = predictions[0]
+    label_names = ['vulnerability', 'ransomware', 'ddos', 'leak', 'general', '0day', 'botnet', 'all']
+    result = {label: probability for label, probability in zip(label_names, label_probabilities)}
+    
+    return result
 
-model.summary()
+# Streamlit App
+st.title('Tweet Label Prediction')
 
-# Make predictions on the test set
-predictions = model.predict([X_test, X_test_text_structure, X_test_url_structure])
-predicted_labels = np.argmax(predictions, axis=1)
+# User input for tweet text
+tweet_text = st.text_area('Enter the tweet text:', '')
 
-# Convert y_test to a pandas Series
-y_test_series = pd.Series(y_test)
-# Add predicted labels to the test set DataFrame
-data_test = data.loc[y_test_series.index]
-data_test['predicted_label'] = predicted_labels
-
-# Construct the knowledge graph
-knowledge_graph = nx.DiGraph()
-
-# Add nodes for each tweet with relevant attributes
-for index, row in data_test.iterrows():
-    tweet_id = index
-    text = row['text']
-    label = row['predicted_label']
-    knowledge_graph.add_node(tweet_id, text=text, label=label)
-
-# Add edges between tweets based on common features (for example, same domain suffix)
-for index1, row1 in data_test.iterrows():
-    for index2, row2 in data_test.iterrows():
-        if index1 != index2:
-            if row1['domain_suffix'] == row2['domain_suffix']:
-                knowledge_graph.add_edge(index1, index2)
-
-# Visualize the knowledge graph
-plt.figure(figsize=(12, 8))
-pos = nx.spring_layout(knowledge_graph)
-nx.draw(knowledge_graph, pos, with_labels=True, font_weight='bold')
-plt.show()
+# Perform analysis on user input text
+if st.button('Analyze'):
+    st.write('Analyzing...')
+    
+    # Predict label types for input text
+    result = predict_label(tweet_text)
+    
+    # Display result in pie chart
+    st.subheader('Prediction Result:')
+    labels = list(result.keys())
+    values = list(result.values())
+    fig, ax = plt.subplots()
+    ax.pie(values, labels=labels, autopct='%1.1f%%')
+    ax.axis('equal')
+    st.pyplot(fig)
