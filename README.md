@@ -17,3 +17,6 @@ The 3rd and 4th model have the architecture and layers as per the main paper, bu
 |[Complex recreation](Model%20Recreation/Behzadan%20(Citation%2028)/complex_model.py)|Text + tweet details analysed|[21368](Model%20Recreation/Behzadan%20(Citation%2028)/tweets_final.csv)|~[96.70%](Model%20Recreation/Behzadan%20(Citation%2028)/complex_output.txt)|
 |[Recreation with exact parameters of main paper](Model%20Recreation/model_with_same_parameters.py)|Text + tweet details analysed + Layers applied with exact parameters|[21368](Model%20Recreation/tweets_final.csv)|~[14.67%](Model%20Recreation/output_for_same_parameters.txt)|
 |[Recreation with changed parameters (better output)](Model%20Recreation/model.py)|Text + tweet details analysed + Layers applied with modified parameters|[21368](Model%20Recreation/tweets_final.csv)|~[95.77%](Model%20Recreation/output.txt)|
+
+
+https://colab.research.google.com/drive/1TGTpVtqKdxZLKgZYcXwHTXeMIhkL2FBr
