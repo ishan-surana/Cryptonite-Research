@@ -17,6 +17,8 @@ import emoji
 import ast
 import networkx as nx
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -249,6 +251,18 @@ model.summary()
 predictions = model.predict([X_test, X_test_text_structure, X_test_url_structure])
 predicted_labels = np.argmax(predictions, axis=1)
 
+# Compute confusion matrix
+conf_matrix = confusion_matrix(y_test, predicted_labels)
+
+# Plot confusion matrix as a heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=label_dict.keys(), yticklabels=label_dict.keys())
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix')
+plt.show()
+
+'''
 # Convert y_test to a pandas Series
 y_test_series = pd.Series(y_test)
 # Add predicted labels to the test set DataFrame
@@ -277,3 +291,4 @@ plt.figure(figsize=(12, 8))
 pos = nx.spring_layout(knowledge_graph)
 nx.draw(knowledge_graph, pos, with_labels=True, font_weight='bold')
 plt.show()
+'''
