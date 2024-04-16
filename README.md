@@ -19,4 +19,9 @@ The 3rd and 4th model have the architecture and layers as per the main paper, bu
 |[Recreation with changed parameters (better output)]( Model_Recreation/model.py)|Text + tweet details analysed + Layers applied with modified parameters|[21368]( Model_Recreation/tweets_final.csv)|~[95.77%]( Model_Recreation/output.txt)|
 
 
-https://colab.research.google.com/drive/1TGTpVtqKdxZLKgZYcXwHTXeMIhkL2FBr
+[Confusion matrix](Model_Recreation/confusion_matrix.png)
+
+[Knowledge graph](Model_Recreation/knowledge_graph.png)
+
+<br>
+Work on KG at https://colab.research.google.com/drive/1TGTpVtqKdxZLKgZYcXwHTXeMIhkL2FBr
