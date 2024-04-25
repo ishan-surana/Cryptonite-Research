@@ -1,6 +1,6 @@
 # Cryptonite Research
 Research on AI and multimodality for spam detection/prevention. <br>
-This work is licensed under [**CC BY-NC-ND 4.0**](LICENSE.md). Please refer the licence for more details regarding freedom of use.
+This work is licensed under [**CC BY-NC-ND 4.0**](../../tree/main?tab=License-1-ov-file). Please refer the licence for more details regarding freedom of use.
 <br><br>
 Initial Work
 | Model | Function | Dataset rows | Accuracy (avg.)|
