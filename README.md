@@ -1,5 +1,6 @@
 # Cryptonite Research
-Research on AI and multimodality for spam detection/prevention
+Research on AI and multimodality for spam detection/prevention. <br>
+This work is licensed under [**CC BY-NC-ND 4.0**](LICENSE.md). Please refer the licence for more details regarding freedom of use.
 <br><br>
 Initial Work
 | Model | Function | Dataset rows | Accuracy (avg.)|
