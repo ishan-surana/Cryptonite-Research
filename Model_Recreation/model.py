@@ -179,9 +179,9 @@ data['destination_url'].fillna('', inplace=True)
 data['resolved_urls'] = data['destination_url'].apply(replace_url_components)
 
 # Vectorization
-# Hashing Vector for content
-hashing_vectorizer = HashingVectorizer(n_features=100)
-X_hash = hashing_vectorizer.fit_transform(data['text'])
+# # Hashing Vector for content
+# hashing_vectorizer = HashingVectorizer(n_features=100)
+# X_hash = hashing_vectorizer.fit_transform(data['text'])
 
 # Text Structure Vector
 X_text_structure = np.array(data['structural_features'].tolist())
@@ -201,7 +201,7 @@ y = np.array([label_dict[category] for category in data['type']])
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X_pad, y, test_size=0.2, random_state=42)
-X_train_hash, X_test_hash, _, _ = train_test_split(X_hash, y, test_size=0.2, random_state=42)
+# X_train_hash, X_test_hash, _, _ = train_test_split(X_hash, y, test_size=0.2, random_state=42)
 X_train_text_structure, X_test_text_structure, _, _ = train_test_split(X_text_structure, y, test_size=0.2, random_state=42)
 X_train_url_structure, X_test_url_structure, _, _ = train_test_split(X_url_structure_hashed, y, test_size=0.2, random_state=42)
 
