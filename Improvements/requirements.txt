@@ -8,3 +8,4 @@ networkx
 matplotlib
 streamlit
 keras===2.15.0
+seaborn
