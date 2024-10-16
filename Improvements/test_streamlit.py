@@ -6,8 +6,9 @@ from tensorflow.keras.models import load_model
 import re
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
+from nltk import pos_tag
 import emoji
 import ast
 import matplotlib.pyplot as plt
@@ -62,9 +63,29 @@ def clean_text(text):
     return text
 
 lemmatizer = WordNetLemmatizer()
-def lemmatize_text(text):
-    tokens = word_tokenize(text)
-    lemmatized_tokens = [lemmatizer.lemmatize(token) for token in tokens]
+
+def pos_tagger(nltk_tag):
+    if nltk_tag.startswith('J'):
+        return wordnet.ADJ
+    elif nltk_tag.startswith('V'):
+        return wordnet.VERB
+    elif nltk_tag.startswith('N'):
+        return wordnet.NOUN
+    elif nltk_tag.startswith('R'):
+        return wordnet.ADV
+    else:          
+        return None
+
+def pos_tag_and_lemmatize(text):
+    tokens = word_tokenize(text.lower())
+    pos_tagged = pos_tag(tokens)
+    wordnet_tagged = list(map(lambda x: (x[0], pos_tagger(x[1])), pos_tagged))
+    lemmatized_tokens = []
+    for word, tag in wordnet_tagged:
+        if tag is None:
+            lemmatized_tokens.append(word)
+        else:
+            lemmatized_tokens.append(lemmatizer.lemmatize(word, tag))
     return ' '.join(lemmatized_tokens)
 
 def extract_first_url(url_list):
@@ -114,14 +135,14 @@ def replace_url_components(url):
     replaced_url = re.sub(r'@[\w\.-]+', 'at_user_nlp', replaced_url)
     return replaced_url
 
-with open('original/outputs/tokenizer2.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
-with open('original/outputs/url_hasher2.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/url_hasher.pickle', 'rb') as handle:
     url_hasher = pickle.load(handle)
-with open('original/outputs/label_dict2.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/label_dict.pickle', 'rb') as handle:
     label_dict = pickle.load(handle)
 
-model = load_model('original/outputs/advanced_cnn_model2.keras')
+model = load_model('Improvements/original/outputs/advanced_cnn_model.h5')
 
 def summary_to_markdown(modelsummary):
     # Clean the model summary
@@ -204,7 +225,7 @@ def summary_dialog(modelsummary):
 
 st.title('Tweet Classification App')
 st.write('This app classifies tweets into different categories based on their content and URL characteristics.')
-tweet_text = st.text_area('Enter the tweet text:', 'Hackers exploit unknown zero day bug. Link to the CVE: https://owasp.com/some-bug')
+tweet_text = st.text_area('Enter the tweet text:', 'New vulnerability found in software, many Windows devices affected globally. Protect your devices against ransomware.')
 
 col1, col2 = st.columns(2)
 with col1:
@@ -218,7 +239,7 @@ with col1:
         tweet_text = remove_stopwords(tweet_text)
         tweet_text = replace_text_components(tweet_text)
         tweet_text = clean_text(tweet_text)
-        tweet_text = lemmatize_text(tweet_text)
+        tweet_text = pos_tag_and_lemmatize(tweet_text)
         tweet_text = tokenizer.texts_to_sequences([tweet_text])
         tweet_text = pad_sequences(tweet_text, maxlen=500)
 

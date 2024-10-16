@@ -8,7 +8,7 @@ from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
 import re
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 from sklearn.feature_extraction.text import HashingVectorizer
@@ -92,22 +92,37 @@ def clean_text(text):
 
 data['text'] = data['text'].apply(clean_text)
 
+# POS Tagging and Lemmatization
 # Lemmatization
 lemmatizer = WordNetLemmatizer()
-def lemmatize_text(text):
-    tokens = word_tokenize(text)
-    lemmatized_tokens = [lemmatizer.lemmatize(token) for token in tokens]
-    return ' '.join(lemmatized_tokens)
-
-data['text'] = data['text'].apply(lemmatize_text)
 
 # POS Tagging
-def pos_tagging(text):
-    tokens = word_tokenize(text)
-    pos_tags = pos_tag(tokens)
-    return pos_tags
+def pos_tagger(nltk_tag):
+    if nltk_tag.startswith('J'):
+        return wordnet.ADJ
+    elif nltk_tag.startswith('V'):
+        return wordnet.VERB
+    elif nltk_tag.startswith('N'):
+        return wordnet.NOUN
+    elif nltk_tag.startswith('R'):
+        return wordnet.ADV
+    else:          
+        return None
 
-data['pos_tags'] = data['text'].apply(pos_tagging)
+# Apply POS tagging and lemmatization together to the 'text' column
+def pos_tag_and_lemmatize(text):
+    tokens = word_tokenize(text.lower())
+    pos_tagged = pos_tag(tokens)
+    wordnet_tagged = list(map(lambda x: (x[0], pos_tagger(x[1])), pos_tagged))
+    lemmatized_tokens = []
+    for word, tag in wordnet_tagged:
+        if tag is None:
+            lemmatized_tokens.append(word)
+        else:
+            lemmatized_tokens.append(lemmatizer.lemmatize(word, tag))
+    return ' '.join(lemmatized_tokens)
+
+data['text'] = data['text'].apply(pos_tag_and_lemmatize)
 
 # Tokenization
 tokenizer = Tokenizer()
@@ -245,11 +260,11 @@ predicted_labels = np.argmax(predictions, axis=1)
 # Ask if I want to save the model
 choice = input('Do you want to save the model? (y/n): ')
 if choice.lower() == 'y':
-    model.save('advanced_cnn_model2.keras')
+    model.save('advanced_cnn_model.h5')
     print('Model saved successfully!')
-    with open('tokenizer2.pickle', 'wb') as handle:
+    with open('tokenizer.pickle', 'wb') as handle:
         pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('label_dict2.pickle', 'wb') as handle:
+    with open('label_dict.pickle', 'wb') as handle:
         pickle.dump(label_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('url_hasher2.pickle', 'wb') as handle:
+    with open('url_hasher.pickle', 'wb') as handle:
         pickle.dump(url_hasher, handle, protocol=pickle.HIGHEST_PROTOCOL)
