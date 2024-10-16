@@ -18,7 +18,7 @@ import seaborn as sns
 
 nltk.download('punkt_tab')
 nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
+nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('stopwords')
 
 def extract_structural_features(text):
