@@ -267,11 +267,11 @@ predicted_labels = np.argmax(predictions, axis=1)
 # Ask if I want to save the model
 choice = input('Do you want to save the model? (y/n): ')
 if choice.lower() == 'y':
-    model.save('advanced_cnn_model2.keras')
+    model.save('outputs/advanced_cnn_model2.keras')
     print('Model saved successfully!')
-    with open('tokenizer2.pickle', 'wb') as handle:
+    with open('outputs/tokenizer2.pickle', 'wb') as handle:
         pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('label_dict2.pickle', 'wb') as handle:
+    with open('outputs/label_dict2.pickle', 'wb') as handle:
         pickle.dump(label_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('url_hasher2.pickle', 'wb') as handle:
+    with open('outputs/url_hasher2.pickle', 'wb') as handle:
         pickle.dump(url_hasher, handle, protocol=pickle.HIGHEST_PROTOCOL)

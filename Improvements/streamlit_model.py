@@ -114,14 +114,14 @@ def replace_url_components(url):
     replaced_url = re.sub(r'@[\w\.-]+', 'at_user_nlp', replaced_url)
     return replaced_url
 
-with open('Improvements/outputs/tokenizer.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/tokenizer2.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
-with open('Improvements/outputs/url_hasher.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/url_hasher2.pickle', 'rb') as handle:
     url_hasher = pickle.load(handle)
-with open('Improvements/outputs/label_dict.pickle', 'rb') as handle:
+with open('Improvements/original/outputs/label_dict2.pickle', 'rb') as handle:
     label_dict = pickle.load(handle)
 
-model = load_model('Improvements/outputs/advanced_cnn_model.keras')
+model = load_model('Improvements/original/outputs/advanced_cnn_model2.keras')
 
 def summary_to_markdown(modelsummary):
     # Clean the model summary
@@ -204,7 +204,7 @@ def summary_dialog(modelsummary):
 
 st.title('Tweet Classification App')
 st.write('This app classifies tweets into different categories based on their content and URL characteristics.')
-tweet_text = st.text_area('Enter the tweet text:', 'Hackers exploit zero day bug. Link to the CVE: https://example.com/data')
+tweet_text = st.text_area('Enter the tweet text:', 'Hackers exploit unknown zero day bug. Link to the CVE: https://owasp.com/some-bug')
 
 col1, col2 = st.columns(2)
 with col1:
@@ -212,7 +212,7 @@ with col1:
     if classify:
         urls_in_text = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet_text)
         tweet_text_structure = np.array([extract_structural_features(tweet_text)])
-        tweet_url_structure = extract_url_features(urls_in_text[0], urls_in_text, False)
+        tweet_url_structure = ['NA'] * 24 if not urls_in_text else extract_url_features(urls_in_text[0], urls_in_text, False)
         tweet_url_structure = url_hasher.transform([tweet_url_structure[-3:-1]]).toarray()
 
         tweet_text = remove_stopwords(tweet_text)
