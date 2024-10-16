@@ -114,14 +114,14 @@ def replace_url_components(url):
     replaced_url = re.sub(r'@[\w\.-]+', 'at_user_nlp', replaced_url)
     return replaced_url
 
-with open('outputs/tokenizer.pickle', 'rb') as handle:
+with open('Improvements/outputs/tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
-with open('outputs/url_hasher.pickle', 'rb') as handle:
+with open('Improvements/outputs/url_hasher.pickle', 'rb') as handle:
     url_hasher = pickle.load(handle)
-with open('outputs/label_dict.pickle', 'rb') as handle:
+with open('Improvements/outputs/label_dict.pickle', 'rb') as handle:
     label_dict = pickle.load(handle)
 
-model = load_model('outputs/advanced_cnn_model.keras')
+model = load_model('Improvements/outputs/advanced_cnn_model.keras')
 
 def summary_to_markdown(modelsummary):
     # Clean the model summary
