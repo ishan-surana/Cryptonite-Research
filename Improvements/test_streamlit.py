@@ -125,8 +125,6 @@ def extract_url_features(url, urls, certificate):
         has_extension = 1 if '.' in url else 0
         domain_suffix = url.split('/')[2].split('?')[0].split('#')[0].split('.')[-1] if '/' in url else 'NA'
         registrant = url.split('/')[2].split('?')[0].split('#')[0].split('.')[-2] if '/' in url else 'NA'
-        if 'utm' in registrant:
-            print(url)
         valid_certificate = 1 if certificate else 0
         return [url_length, has_security_protocol, is_shortened_url, strings_divided_by_periods, strings_divided_by_hyphens, strings_divided_by_slashes, num_words, num_ips, num_digits, num_hyphens, num_periods, num_slashes, num_uppercase, num_lowercase, num_ampersand_symbols, num_equal_symbols, num_question_marks, num_wave_symbols, num_plus_signs, num_colon_symbols, num_other_characters, has_extension, domain_suffix, registrant, valid_certificate]
 
@@ -263,7 +261,6 @@ with col2:
         modelsummary = []
         model.summary(print_fn=lambda x: modelsummary.append(x))
         modelsummary = "\n".join(modelsummary)
-        print(modelsummary)
         summary_dialog(modelsummary)
 
 st.write('This app was created by me. You can find more about me on my [GitHub](https://www.github.com/ishan-surana).')
