@@ -159,5 +159,5 @@ def get_blockchain():
     chain = blockchain.get_chain()
     return render_template_string("<pre>"+chain+"</pre>")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+# if __name__ == '__main__':
+#     app.run(port=80, debug=False)
